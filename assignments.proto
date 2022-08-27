@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+message Course {
+    int64 course_id = 1;
+    string course_name = 2;
+    int64 credits = 3;
+    google.protobuf.Timestamp start_date = 4;
+    google.protobuf.Timestamp end_date = 5;
+    string scheduled_course_time = 6;
+    repeated Student enrolled_students = 7;
+    repeated Student dropped_students = 8;
+    map<int64, string> grades = 9;
+}
+
+message Student {
+    int64 student_id = 1;
+    string name = 2;
+    optional string email = 3;
+    int64 credit_capacity = 4;
+    repeated int64 ongoing_courses_id = 5;
+}
+
+// message CreateStudent {
+//     Student student_profile = 1;
+// }
+message CreateStudentResponse {
+    bool success = 1;
+}
+
+message UpdateStudentResponse {
+    bool success = 1;
+}
+
+service Students {
+    rpc Create(Student) returns (CreateStudentResponse);
+    rpc Update(Student) returns (UpdateStudentResponse);
+
+}
