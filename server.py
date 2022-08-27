@@ -10,8 +10,8 @@ import grpc
 from grpc_reflection.v1alpha import reflection
 import logging
 import redis
-import assignments_pb2 as pb
-import assignments_pb2_grpc as rpc
+from .generated import scapp_pb2 as pb
+from .generated import scapp_pb2_grpc as rpc
 
 r = redis.Redis(
     host='localhost',

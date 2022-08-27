@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import assignments_pb2 as assignments__pb2
+import scapp_pb2 as scapp__pb2
 
 
 class StudentsStub(object):
@@ -16,13 +16,13 @@ class StudentsStub(object):
         """
         self.Create = channel.unary_unary(
                 '/Students/Create',
-                request_serializer=assignments__pb2.Student.SerializeToString,
-                response_deserializer=assignments__pb2.CreateStudentResponse.FromString,
+                request_serializer=scapp__pb2.Student.SerializeToString,
+                response_deserializer=scapp__pb2.CreateStudentResponse.FromString,
                 )
         self.Update = channel.unary_unary(
                 '/Students/Update',
-                request_serializer=assignments__pb2.Student.SerializeToString,
-                response_deserializer=assignments__pb2.UpdateStudentResponse.FromString,
+                request_serializer=scapp__pb2.Student.SerializeToString,
+                response_deserializer=scapp__pb2.UpdateStudentResponse.FromString,
                 )
 
 
@@ -46,13 +46,13 @@ def add_StudentsServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Create': grpc.unary_unary_rpc_method_handler(
                     servicer.Create,
-                    request_deserializer=assignments__pb2.Student.FromString,
-                    response_serializer=assignments__pb2.CreateStudentResponse.SerializeToString,
+                    request_deserializer=scapp__pb2.Student.FromString,
+                    response_serializer=scapp__pb2.CreateStudentResponse.SerializeToString,
             ),
             'Update': grpc.unary_unary_rpc_method_handler(
                     servicer.Update,
-                    request_deserializer=assignments__pb2.Student.FromString,
-                    response_serializer=assignments__pb2.UpdateStudentResponse.SerializeToString,
+                    request_deserializer=scapp__pb2.Student.FromString,
+                    response_serializer=scapp__pb2.UpdateStudentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +76,8 @@ class Students(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Students/Create',
-            assignments__pb2.Student.SerializeToString,
-            assignments__pb2.CreateStudentResponse.FromString,
+            scapp__pb2.Student.SerializeToString,
+            scapp__pb2.CreateStudentResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +93,7 @@ class Students(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Students/Update',
-            assignments__pb2.Student.SerializeToString,
-            assignments__pb2.UpdateStudentResponse.FromString,
+            scapp__pb2.Student.SerializeToString,
+            scapp__pb2.UpdateStudentResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
