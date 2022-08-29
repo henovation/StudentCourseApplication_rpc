@@ -3,11 +3,12 @@ import scapp_pb2_grpc as rpc
 import sys
 import grpc
 import redis
+import utils
+from google.protobuf.json_format import MessageToJson
 
 r = redis.Redis(host='localhost', port=6379)
 
-
-def create_student():
+def cmd_create_student():
     name = input("Enter student name: ")
     email = input("Enter student email: ")
     with grpc.insecure_channel('localhost:1024') as channel:
@@ -16,6 +17,7 @@ def create_student():
         if response.success:
             print("Successfully created your profile: \n", name, email)
 
+
 def list_student():
     if not r.get("all_students"):
         print('No student data in redis')
@@ -23,9 +25,8 @@ def list_student():
         all_students = pb.AllStudents()
         all_students_string = r.get("all_students")
         all_students.ParseFromString(all_students_string)
-
-    for student in all_students.students:
-        print(student)
+    [print(MessageToJson(student)) for student in all_students.students]
+        
 
 def list_course():
     if not r.get("all_courses"):
@@ -34,12 +35,14 @@ def list_course():
         all_courses = pb.AllCourses()
         all_courses_string = r.get("all_courses")
         all_courses.ParseFromString(all_courses_string)
+    [print(MessageToJson(course)) for course in all_courses.courses]
 
-    for course in all_courses.courses:
-        print(course)
 
 if __name__ == "__main__":
 
-    # create_student()
+    # cmd_create_student()
     # list_student()
     list_course()
+
+    # utils.get_student_by_id(30001)
+    # utils.get_course_data_by_id("55e39268300f46c0a39fa34572c7d097")

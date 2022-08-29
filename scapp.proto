@@ -8,13 +8,16 @@ message Course {
     string course_id = 1;
     string course_name = 2;
     int64 credits = 3;
-    google.protobuf.Timestamp start_date = 4;
-    google.protobuf.Timestamp end_date = 5;
-    google.protobuf.Timestamp create_course_datetime = 10;
-    string scheduled_course_time = 6;
-    repeated Student enrolled_students = 7;
-    repeated Student dropped_students = 8;
-    repeated Grade grades = 9;
+    string start_date = 4;
+    google.protobuf.Timestamp start_date_timestamp = 5;
+    string end_date = 6;
+    google.protobuf.Timestamp end_date_timestamp = 7;
+    string course_schedule = 8;
+    repeated int64 enrolled_students = 9;
+    repeated int64 dropped_students = 10;
+    repeated Grade grades = 11;
+    google.protobuf.Timestamp create_course_timestamp = 12;
+    google.protobuf.Timestamp last_modified_timestamp = 13;
 }
 
 message AllStudents {
@@ -25,8 +28,9 @@ message Student {
     string student_name = 2;
     string email = 3;
     int64 credit_capacity = 4;
-    repeated int64 registered_courses_id = 5;
-    google.protobuf.Timestamp create_student_datetime = 6;
+    repeated string registered_courses = 5;
+    google.protobuf.Timestamp create_student_timestamp = 6;
+    google.protobuf.Timestamp last_modified_timestamp = 7;
 }
 
 message Grade {
@@ -53,9 +57,9 @@ message UpdateStudentResponse {
 message CreateCourseRequest {
     string course_name = 1;
     int64 credits = 2;
-    google.protobuf.Timestamp start_date = 3;
-    google.protobuf.Timestamp end_date = 4;
-    string scheduled_course_time = 5;
+    string start_date = 3;
+    string end_date = 4;
+    string course_schedule = 5;
 }
 message CreateCourseResponse {
     bool success = 1;
@@ -65,9 +69,9 @@ message UpdateCourseRequest {
     string course_id = 1;
     string course_name = 2;
     int64 credits = 3;
-    google.protobuf.Timestamp start_date = 4;
-    google.protobuf.Timestamp end_date = 5;
-    string scheduled_course_time = 6;
+    string start_date = 4;
+    string end_date = 5;
+    string course_schedule = 6;
 }
 message UpdateCourseResponse {
     bool success = 1;
@@ -100,14 +104,14 @@ message GetCourseRequest {
     int64 student_id = 1;
 }
 message GetCoursesResponse {
-    repeated int64 course_list = 1;
+    repeated Course course_list = 1;
 }
 
 message GetStudentsRequest {
-    int64 student_id = 1;
+    string course_id = 1;
 }
 message GetStudentsResponse {
-    repeated int64 student_list = 1;
+    repeated Student student_list = 1;
 }
 
 
@@ -118,14 +122,21 @@ message GetStudentGPAResponse {
     double gpa = 1;
 }
 
+message SetStudentGradeRequest {
+    int64 student_id = 1;
+    string course_id = 2;
+    string grade = 3;
+}
+message SetStudentGradeResponse {
+    bool success = 1;
+}
+
 message GetStudentGradeRequest {
     int64 student_id = 1;
     string course_id = 2;
 }
 message GetStudentGradeResponse {
-    string student_name = 1;
-    string course_name = 2;
-    string grade = 3;
+    string grade = 1;
 }
 
 message ResetStudentDataRequest {
@@ -156,6 +167,7 @@ service CourseServices {
     rpc RemoveStudent(RemoveStudentFromCourseRequest) returns (RemoveStudentFromCourseResponse);
     rpc CalculateAve(CalculateCourseAverageRequest) returns (CalculateCourseAverageResponse);
     rpc GetStudent(GetStudentsRequest) returns (GetStudentsResponse);
+    rpc SetStudentGrade(SetStudentGradeRequest) returns (SetStudentGradeResponse);
     rpc GetStudentGrade(GetStudentGradeRequest) returns (GetStudentGradeResponse);
     rpc ResetCourseData(ResetCourseDataRequest) returns (ResetDataStoreResponse);
 }

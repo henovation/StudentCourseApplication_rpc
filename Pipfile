@@ -11,6 +11,7 @@ grpcio-reflection = "*"
 pytest = "*"
 pytest-grpc = "*"
 pandas = "*"
+pylint = "*"
 
 [dev-packages]
 

@@ -1,49 +1,64 @@
-from uuid import uuid4
-import config
 import redis
 import scapp_pb2 as pb
 import scapp_pb2_grpc as rpc
+from google.protobuf.timestamp_pb2 import Timestamp
+from course_service_helper import get_student_grade_from_course, get_course_credit
+from utils import db
 
-r = redis.Redis(host='localhost', port=6379)
 
-def get_student_id():
-    if not r.get("all_students"):
-        id = config.init_student_id
-        print("No student data in redis, use init_student_id: ", id)
-    else:
-        all_students = pb.AllStudents()
-        all_students_string = r.get("all_students")
-        all_students.ParseFromString(all_students_string)
-        last_id = all_students.students[-1].student_id
-        print("Last used ID is: ", last_id)
-        id = last_id + 1
-    return id
-
+db = redis.Redis(host='localhost', port=6379)
 
 def store_student(student):
     all_students = pb.AllStudents()
-    if not r.get("all_students"):
+    if not db.get("all_students"):
         print('No student data in redis, creating...')
         all_students.students.append(student)
     else:
-        all_students_string = r.get("all_students")
+        all_students_string = db.get("all_students")
         all_students.ParseFromString(all_students_string)
         all_students.students.append(student)
 
-    # for student in all_students.students:
-    #     print(student)
     all_students_string = all_students.SerializeToString()
-    r.set("all_students", all_students_string)
+    db.set("all_students", all_students_string)
 
 
-def get_student_by_id(id):
+def update_student(updated_student):
     all_students = pb.AllStudents()
-    if not r.get("all_students"):
-        print('No student data in redis, creating...')
-    else:
-        all_students_string = r.get("all_students")
-        all_students.ParseFromString(all_students_string)
-    
+    all_students_string = db.get("all_students")
+    all_students.ParseFromString(all_students_string)
+
     for student in all_students.students:
-        if student.student_id == id:
-            return student
+        if student.student_id == updated_student.student_id:
+            if updated_student.student_name:
+                student.student_name = updated_student.student_name
+            if updated_student.email:
+                student.email = updated_student.email
+            student.last_modified_timestamp.GetCurrentTime()
+            break
+    all_students_string = all_students.SerializeToString()
+    db.set("all_students", all_students_string)
+
+    
+def calculate_gpa(sid: int):
+    all_students = pb.AllStudents()
+    all_students_string = db.get("all_students")
+    all_students.ParseFromString(all_students_string)
+    grades = ["A", "B", "C", "D", "E"]
+    scores = [5, 4, 3, 2, 1]
+    grades_dict = dict(zip(grades, scores))
+
+    for student in all_students.students:
+        if student.student_id == sid:
+            registered_courses_ids = student.registered_courses
+            break
+    
+    print('\nStart calculating student {} GPA:'.format(sid))
+    total_scores = 0
+    total_credits = 0
+    for cid in registered_courses_ids:
+        grade = get_student_grade_from_course(sid, cid)
+        credit = get_course_credit(cid)
+        print('Grade: {} for course: {}'.format(grade, cid))
+        total_scores += grades_dict.get(grade) * credit
+        total_credits += credit
+    return total_scores/total_credits

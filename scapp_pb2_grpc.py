@@ -237,6 +237,11 @@ class CourseServicesStub(object):
                 request_serializer=scapp__pb2.GetStudentsRequest.SerializeToString,
                 response_deserializer=scapp__pb2.GetStudentsResponse.FromString,
                 )
+        self.SetStudentGrade = channel.unary_unary(
+                '/CourseServices/SetStudentGrade',
+                request_serializer=scapp__pb2.SetStudentGradeRequest.SerializeToString,
+                response_deserializer=scapp__pb2.SetStudentGradeResponse.FromString,
+                )
         self.GetStudentGrade = channel.unary_unary(
                 '/CourseServices/GetStudentGrade',
                 request_serializer=scapp__pb2.GetStudentGradeRequest.SerializeToString,
@@ -288,6 +293,12 @@ class CourseServicesServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetStudentGrade(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetStudentGrade(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -332,6 +343,11 @@ def add_CourseServicesServicer_to_server(servicer, server):
                     servicer.GetStudent,
                     request_deserializer=scapp__pb2.GetStudentsRequest.FromString,
                     response_serializer=scapp__pb2.GetStudentsResponse.SerializeToString,
+            ),
+            'SetStudentGrade': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetStudentGrade,
+                    request_deserializer=scapp__pb2.SetStudentGradeRequest.FromString,
+                    response_serializer=scapp__pb2.SetStudentGradeResponse.SerializeToString,
             ),
             'GetStudentGrade': grpc.unary_unary_rpc_method_handler(
                     servicer.GetStudentGrade,
@@ -452,6 +468,23 @@ class CourseServices(object):
         return grpc.experimental.unary_unary(request, target, '/CourseServices/GetStudent',
             scapp__pb2.GetStudentsRequest.SerializeToString,
             scapp__pb2.GetStudentsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetStudentGrade(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/CourseServices/SetStudentGrade',
+            scapp__pb2.SetStudentGradeRequest.SerializeToString,
+            scapp__pb2.SetStudentGradeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
