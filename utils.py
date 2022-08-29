@@ -1,10 +1,7 @@
-from datetime import datetime
 import redis
 from uuid import uuid4
 import config
-from google.protobuf.timestamp_pb2 import Timestamp
 import scapp_pb2 as pb
-import scapp_pb2_grpc as rpc
 
 db = redis.Redis(host='localhost', port=6379)
 

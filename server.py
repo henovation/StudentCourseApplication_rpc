@@ -1,16 +1,10 @@
 from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures.process import _threads_wakeups
-from http.client import REQUEST_URI_TOO_LONG
-import json
-from subprocess import SubprocessError
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.timestamp_pb2 import Timestamp
 
 import grpc
-from datetime import datetime
 import scapp_pb2 as pb
 import scapp_pb2_grpc as rpc
-
 import student_service_helper as shelper
 import course_service_helper as chelper
 import utils
@@ -77,8 +71,8 @@ class CourseServcies(rpc.CourseServicesServicer):
                 credits=request.credits,
                 start_date=request.start_date,
                 end_date=request.end_date,
-                start_date_timestamp=get_proto_timestamp_from_string(request.start_date),
-                end_date_timestamp=get_proto_timestamp_from_string(request.end_date),
+                start_date_timestamp=utils.get_proto_timestamp_from_string(request.start_date),
+                end_date_timestamp=utils.get_proto_timestamp_from_string(request.end_date),
                 course_schedule=request.course_schedule,
                 create_course_timestamp=create_time,
                 last_modified_timestamp=create_time,

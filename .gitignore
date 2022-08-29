@@ -1,0 +1,6 @@
+.vscode
+test_grpc.py
+Pipfile
+Pipfile.lock
+*__pycache__
+*.pytest_cache

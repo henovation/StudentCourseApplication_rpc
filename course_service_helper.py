@@ -1,6 +1,4 @@
-import redis
 import scapp_pb2 as pb
-import scapp_pb2_grpc as rpc
 from utils import db
 
 def store_course(new_course):
@@ -46,9 +44,10 @@ def update_course(updated_course):
 
 # <---- Datetime processing related utils from here ---->
 def convert_to_datetime_from_string(dt_string):
-        ymd = dt_string.split('-')
-        dt = datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))
-        return dt
+    from datetime import datetime
+    ymd = dt_string.split('-')
+    dt = datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))
+    return dt
 
 def add_student_to_course(sid: int, cid: str):
     all_courses = pb.AllCourses()

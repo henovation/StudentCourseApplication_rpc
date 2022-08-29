@@ -1,12 +1,7 @@
-import redis
 import scapp_pb2 as pb
-import scapp_pb2_grpc as rpc
-from google.protobuf.timestamp_pb2 import Timestamp
 from course_service_helper import get_student_grade_from_course, get_course_credit
 from utils import db
 
-
-db = redis.Redis(host='localhost', port=6379)
 
 def store_student(student):
     all_students = pb.AllStudents()

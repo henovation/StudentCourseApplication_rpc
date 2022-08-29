@@ -1,12 +1,9 @@
 import scapp_pb2 as pb
 import scapp_pb2_grpc as rpc
-import sys
 import grpc
-import redis
-import utils
 from google.protobuf.json_format import MessageToJson
+from utils import db
 
-r = redis.Redis(host='localhost', port=6379)
 
 def cmd_create_student():
     name = input("Enter student name: ")
@@ -19,21 +16,21 @@ def cmd_create_student():
 
 
 def list_student():
-    if not r.get("all_students"):
+    if not db.get("all_students"):
         print('No student data in redis')
     else:
         all_students = pb.AllStudents()
-        all_students_string = r.get("all_students")
+        all_students_string = db.get("all_students")
         all_students.ParseFromString(all_students_string)
     [print(MessageToJson(student)) for student in all_students.students]
         
 
 def list_course():
-    if not r.get("all_courses"):
+    if not db.get("all_courses"):
         print('No course data in redis')
     else:
         all_courses = pb.AllCourses()
-        all_courses_string = r.get("all_courses")
+        all_courses_string = db.get("all_courses")
         all_courses.ParseFromString(all_courses_string)
     [print(MessageToJson(course)) for course in all_courses.courses]
 
