@@ -1,2 +1,0 @@
-port=1024
-init_student_id=30001
