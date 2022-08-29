@@ -1,0 +1,173 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+message AllCourses {
+    repeated Course courses = 1;
+}
+message Course {
+    string course_id = 1;
+    string course_name = 2;
+    int64 credits = 3;
+    string start_date = 4;
+    google.protobuf.Timestamp start_date_timestamp = 5;
+    string end_date = 6;
+    google.protobuf.Timestamp end_date_timestamp = 7;
+    string course_schedule = 8;
+    repeated int64 enrolled_students = 9;
+    repeated int64 dropped_students = 10;
+    repeated Grade grades = 11;
+    google.protobuf.Timestamp create_course_timestamp = 12;
+    google.protobuf.Timestamp last_modified_timestamp = 13;
+}
+
+message AllStudents {
+    repeated Student students = 1;
+}
+message Student {
+    int64 student_id = 1;
+    string student_name = 2;
+    string email = 3;
+    int64 credit_capacity = 4;
+    repeated string registered_courses = 5;
+    google.protobuf.Timestamp create_student_timestamp = 6;
+    google.protobuf.Timestamp last_modified_timestamp = 7;
+}
+
+message Grade {
+    map<int64, string> grade = 1;
+}
+
+message CreateStudentRequest {
+    string student_name = 1;
+    string email = 2;
+}
+message CreateStudentResponse {
+    bool success = 1;
+}
+
+message UpdateStudentRequest {
+    int64 student_id = 1;
+    string student_name = 2;
+    string email = 3;
+}
+message UpdateStudentResponse {
+    bool success = 1;
+}
+
+message CreateCourseRequest {
+    string course_name = 1;
+    int64 credits = 2;
+    string start_date = 3;
+    string end_date = 4;
+    string course_schedule = 5;
+}
+message CreateCourseResponse {
+    bool success = 1;
+}
+
+message UpdateCourseRequest {
+    string course_id = 1;
+    string course_name = 2;
+    int64 credits = 3;
+    string start_date = 4;
+    string end_date = 5;
+    string course_schedule = 6;
+}
+message UpdateCourseResponse {
+    bool success = 1;
+}
+
+message AddStudentToCourseRequest {
+    int64 student_id = 1;
+    string course_id = 2;
+}
+message AddStudentToCourseResponse {
+    bool success = 1;
+}
+
+message RemoveStudentFromCourseRequest {
+    int64 student_id = 1;
+    string course_id = 2;
+}
+message RemoveStudentFromCourseResponse {
+    bool success = 1;
+}
+
+message CalculateCourseAverageRequest {
+    string course_id = 1;
+}
+message CalculateCourseAverageResponse {
+    double average = 1;
+}
+
+message GetCourseRequest {
+    int64 student_id = 1;
+}
+message GetCoursesResponse {
+    repeated Course course_list = 1;
+}
+
+message GetStudentsRequest {
+    string course_id = 1;
+}
+message GetStudentsResponse {
+    repeated Student student_list = 1;
+}
+
+
+message GetStudentGPARequest {
+    int64 student_id = 1;
+}
+message GetStudentGPAResponse {
+    double gpa = 1;
+}
+
+message SetStudentGradeRequest {
+    int64 student_id = 1;
+    string course_id = 2;
+    string grade = 3;
+}
+message SetStudentGradeResponse {
+    bool success = 1;
+}
+
+message GetStudentGradeRequest {
+    int64 student_id = 1;
+    string course_id = 2;
+}
+message GetStudentGradeResponse {
+    string grade = 1;
+}
+
+message ResetStudentDataRequest {
+    google.protobuf.Timestamp timestamp = 1;
+}
+
+message ResetCourseDataRequest {
+    google.protobuf.Timestamp timestamp = 1;
+}
+
+message ResetDataStoreResponse {
+    bool reset_student_data_success = 1;
+    bool reset_course_data_success = 2;
+}
+
+service StudentServices {
+    rpc CreateStudent(CreateStudentRequest) returns (CreateStudentResponse);
+    rpc UpdateStudent(UpdateStudentRequest) returns (UpdateStudentResponse);
+    rpc GetCourse(GetCourseRequest) returns (GetCoursesResponse);
+    rpc GetStudentGPA(GetStudentGPARequest) returns (GetStudentGPAResponse);
+    rpc ResetStudentData(ResetStudentDataRequest) returns (ResetDataStoreResponse);
+}
+
+service CourseServices {
+    rpc CreateCourse(CreateCourseRequest) returns (CreateCourseResponse);
+    rpc UpdateCourse(UpdateCourseRequest) returns (UpdateCourseResponse);
+    rpc AddStudent(AddStudentToCourseRequest) returns (AddStudentToCourseResponse);
+    rpc RemoveStudent(RemoveStudentFromCourseRequest) returns (RemoveStudentFromCourseResponse);
+    rpc CalculateAve(CalculateCourseAverageRequest) returns (CalculateCourseAverageResponse);
+    rpc GetStudent(GetStudentsRequest) returns (GetStudentsResponse);
+    rpc SetStudentGrade(SetStudentGradeRequest) returns (SetStudentGradeResponse);
+    rpc GetStudentGrade(GetStudentGradeRequest) returns (GetStudentGradeResponse);
+    rpc ResetCourseData(ResetCourseDataRequest) returns (ResetDataStoreResponse);
+}
