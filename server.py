@@ -3,11 +3,11 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.timestamp_pb2 import Timestamp
 
 import grpc
-import scapp_pb2 as pb
-import scapp_pb2_grpc as rpc
-import student_service_helper as shelper
-import course_service_helper as chelper
-import utils
+import helper.generated.scapp_pb2 as pb
+import helper.generated.scapp_pb2_grpc as rpc
+import helper.student_service_helper as shelper
+import helper.course_service_helper as chelper
+import helper.utils as utils
 
 
 class StudentServices(rpc.StudentServicesServicer):
@@ -17,7 +17,7 @@ class StudentServices(rpc.StudentServicesServicer):
             create_time = Timestamp()
             create_time.GetCurrentTime()
             new_student = pb.Student(
-                student_id=utils.get_student_id(),
+                student_id=utils.create_student_id(),
                 student_name=request.student_name,
                 email=request.email,
                 credit_capacity=36,
@@ -62,26 +62,26 @@ class StudentServices(rpc.StudentServicesServicer):
 class CourseServcies(rpc.CourseServicesServicer):
     def CreateCourse(self, request, context):
         """ Create a course info """
-        try:
-            create_time = Timestamp()
-            create_time.GetCurrentTime()
-            new_course = pb.Course(
-                course_id=utils.generate_course_id(),
-                course_name=request.course_name,
-                credits=request.credits,
-                start_date=request.start_date,
-                end_date=request.end_date,
-                start_date_timestamp=utils.get_proto_timestamp_from_string(request.start_date),
-                end_date_timestamp=utils.get_proto_timestamp_from_string(request.end_date),
-                course_schedule=request.course_schedule,
-                create_course_timestamp=create_time,
-                last_modified_timestamp=create_time,
-            )
-            chelper.store_course(new_course)
-            success = True
-        except:
-            print('Error when creating a course with input data:\n{}'.format(request))
-            success = False
+        # try:
+        create_time = Timestamp()
+        create_time.GetCurrentTime()
+        new_course = pb.Course(
+            course_id=utils.generate_course_id(),
+            course_name=request.course_name,
+            credits=request.credits,
+            start_date=request.start_date,
+            end_date=request.end_date,
+            start_date_timestamp=utils.get_proto_timestamp_from_string(request.start_date),
+            end_date_timestamp=utils.get_proto_timestamp_from_string(request.end_date),
+            course_schedule=request.course_schedule,
+            create_course_timestamp=create_time,
+            last_modified_timestamp=create_time,
+        )
+        chelper.store_course(new_course)
+        success = True
+        # except:
+        #     print('Error when creating a course with input data:\n{}'.format(request))
+        #     success = False
         return pb.CreateCourseResponse(success=success)
 
     def UpdateCourse(self, request, context):

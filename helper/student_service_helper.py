@@ -1,6 +1,6 @@
-import scapp_pb2 as pb
-from course_service_helper import get_student_grade_from_course, get_course_credit
-from utils import db
+from helper.course_service_helper import get_student_grade_from_course, get_course_credit
+import helper.generated.scapp_pb2 as pb
+from helper.utils import db
 
 
 def store_student(student):

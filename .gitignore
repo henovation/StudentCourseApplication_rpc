@@ -1,7 +1,7 @@
 .vscode
 test_grpc.py
 setup_test.py
-Pipfile
+./Pipfile
 Pipfile.lock
 *__pycache__
 *.pytest_cache

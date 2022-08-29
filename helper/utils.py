@@ -1,9 +1,24 @@
 import redis
 from uuid import uuid4
+from datetime import datetime
+from google.protobuf.timestamp_pb2 import Timestamp
 import config
-import scapp_pb2 as pb
+import helper.generated.scapp_pb2 as pb
 
 db = redis.Redis(host='localhost', port=6379)
+
+# <---- Datetime processing related utils from here ---->
+def convert_to_datetime_from_string(dt_string: str):
+    ymd = dt_string.split('-')
+    dt = datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))
+    return dt
+
+def get_proto_timestamp_from_string(dt_string: str):
+    timestamp = Timestamp()
+    dt = convert_to_datetime_from_string(dt_string)
+    timestamp.FromDatetime(dt)
+    return timestamp
+
 
 # <---- Validation related utils from here ---->
 def validate_student_id(sid: int):
@@ -43,7 +58,7 @@ def validate_grade(grade: str):
 
 
 # <---- Students related utils from here ---->
-def get_student_id():
+def create_student_id():
     if not db.get("all_students"):
         id = config.init_student_id
         print("Initializing student_id: ", id)

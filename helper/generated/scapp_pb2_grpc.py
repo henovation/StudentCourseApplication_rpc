@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import scapp_pb2 as scapp__pb2
+import helper.generated.scapp_pb2 as scapp__pb2
 
 
 class StudentServicesStub(object):

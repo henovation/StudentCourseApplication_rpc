@@ -1,6 +1,6 @@
-from atexit import register
-import scapp_pb2 as pb
-from utils import db
+import helper.generated.scapp_pb2 as pb
+from helper.utils import db
+import helper.utils as utils
 
 def store_course(new_course):
     all_courses = pb.AllCourses()
@@ -29,11 +29,11 @@ def update_course(updated_course):
                 course.credits = updated_course.credits
             if updated_course.start_date:
                 course.start_date = updated_course.start_date
-                dt = convert_to_datetime_from_string(updated_course.start_date)
+                dt = utils.convert_to_datetime_from_string(updated_course.start_date)
                 course.end_date_timestamp.FromDatetime(dt)
             if updated_course.end_date:
                 course.end_date = updated_course.end_date
-                dt = convert_to_datetime_from_string(updated_course.end_date)
+                dt = utils.convert_to_datetime_from_string(updated_course.end_date)
                 course.end_date_timestamp.FromDatetime(dt)
             if updated_course.course_schedule:
                 course.course_schedule = updated_course.course_schedule
@@ -43,12 +43,7 @@ def update_course(updated_course):
     all_courses_string = all_courses.SerializeToString()
     db.set("all_courses", all_courses_string)
 
-# <---- Datetime processing related utils from here ---->
-def convert_to_datetime_from_string(dt_string):
-    from datetime import datetime
-    ymd = dt_string.split('-')
-    dt = datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))
-    return dt
+
 
 def add_student_to_course(sid: int, cid: str):
     all_courses = pb.AllCourses()
