@@ -6,10 +6,11 @@ import helper.generated.scapp_pb2_grpc as rpc
 import helper.SCArgParser as SCArgParser
 import helper.student_service_helper as shelper
 import helper.course_service_helper as chelper
+from helper.utils import *
 from helper.utils import db
 
 
-def cmd_create_student(name=None, email=None):
+def create_student(name=None, email=None):
     if not name:
         name = input("Enter student name: ")
     if not email:
@@ -21,177 +22,99 @@ def cmd_create_student(name=None, email=None):
             print("Successfully created your profile: \n", name, email)
 
 
-def list_student():
-    if not db.get("all_students"):
-        print('No student data in redis')
-    else:
-        all_students = pb.AllStudents()
-        all_students_string = db.get("all_students")
-        all_students.ParseFromString(all_students_string)
-    [print(MessageToJson(student)) for student in all_students.students]
-        
+def get_student_course(sid: int):
+    with grpc.insecure_channel('localhost:1024') as channel:
+        stub = rpc.StudentServicesStub(channel)
+        registered_courses = stub.GetCourse(pb.GetCourseRequest(student_id=sid))
+        [print(MessageToJson(course)) for course in registered_courses.courses]
 
-def list_course():
-    if not db.get("all_courses"):
-        print('No course data in redis')
-    else:
-        all_courses = pb.AllCourses()
-        all_courses_string = db.get("all_courses")
-        all_courses.ParseFromString(all_courses_string)
-    [print(MessageToJson(course)) for course in all_courses.courses]
-    # for course in all_courses.courses:
-    #     print(course.grades)
 
 
 def main(args=None):
     if not args:
         args = SCArgParser.ArgParser().parse()
 
-    if args.CreateStudent:
+
+    if args.list_all_students:
+        list_all_students()
+
+    if args.get_studentList:
+        get_studentList()
+
+    if args.list_all_courses:
+        list_all_courses()
+
+    if args.get_courseList:
+        get_courseList()
+
+    if args.get_student_by_id:
+        get_student_by_id(args.sid)
+
+    if args.get_course_by_id:
+        get_course_data_by_id(args.cid)
+
+
+
+    if args.create_student_by_input:
+        create_student()
+
+    if args.createStudent:
         if args.name and args.email:
-            cmd_create_student(args.name, args.email)
+            create_student(args.name, args.email)
         else:
-            cmd_create_student()
-        return
+            print('Please make sure both name and email provided!')
 
-    if args.UpdateStudent:
-        if not args.sid:
-            print('Student id is required', '\033[95m')
-            return
-        if not args.name:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
+    # if args.updateStudent:
 
-    if args.GetStudentCourse:
+    if args.getCoursesOfStudent:
+        get_student_course(args.sid)
+
+    if args.getStudentGradePointAverage:
+        response = shelper.calculate_gpa(args.sid)
+        print(response)
+
+
+    # if args.createCourse:
+
+    # if args.updateCourse:
+
+
+    if args.addStudentToCourse:
         if not args.cid:
             print('No course id specified', '\033[95m')
             return
         elif not args.sid:
             print('No student id specified', '\033[94m')
             return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
+        chelper.add_student_to_course(args.sid, args.cid)
 
-    if args.GetStudentGPA:
+    if args.removeStudentFromCourse:
         if not args.cid:
             print('No course id specified', '\033[95m')
             return
         elif not args.sid:
             print('No student id specified', '\033[94m')
             return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.CreateCourse:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.UpdateCourse:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.AddStudent:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.RemoveStudent:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.CalculateAve:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.GetStudent:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.SetStudentGrade:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.GetStudentGrade:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
-
-    if args.ResetData:
-        if not args.cid:
-            print('No course id specified', '\033[95m')
-            return
-        elif not args.sid:
-            print('No student id specified', '\033[94m')
-            return
-        sid = int(args.sid)
-        chelper.add_student_to_course(sid, args.cid)
-        return
+        chelper.remove_student_from_course(args.sid, args.cid)
 
 
-    # list_student()
-    # list_course()
+    if args.calculateCourseAverage:
+        response = chelper.calculate_ave(args.cid)
+        print('Average score for course {} is: {}'.format(args.cid, response))
 
-    # utils.get_student_by_id(30001)
-    # utils.get_course_data_by_id("55e39268300f46c0a39fa34572c7d097")
+    if args.getStudentsOfCourse:
+        response = chelper.get_registered_students(args.cid)
+        print(response)
+
+
+    if args.setStudentGradeForCourse:
+        chelper.set_student_grade_to_course(args.sid, args.cid, args.grade)
+
+    if args.getStudentGrade:
+        response = chelper.get_student_grade_from_course(args.sid, args.cid)
+        print('Student {} got the grade: "{}" for the course {}'.format(args.sid, response, args.cid))
+
+    # if args.resetDataStore:
 
 
 if __name__ == "__main__":

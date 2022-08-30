@@ -2,6 +2,7 @@ import redis
 from uuid import uuid4
 from datetime import datetime
 from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.json_format import MessageToJson
 import config
 import helper.generated.scapp_pb2 as pb
 
@@ -82,8 +83,34 @@ def get_student_by_id(id):
     
     for student in all_students.students:
         if student.student_id == id:
+            print(student)
             return student
 
+
+def list_all_students():
+    if not db.get("all_students"):
+        print('No student data in redis')
+    else:
+        all_students = pb.AllStudents()
+        all_students_string = db.get("all_students")
+        all_students.ParseFromString(all_students_string)
+    [print(MessageToJson(student),'\n\n\n') for student in all_students.students]
+        
+
+def get_studentList():
+    if not db.get("all_students"):
+        print('No student data in redis')
+    else:
+        all_students = pb.AllStudents()
+        all_students_string = db.get("all_students")
+        all_students.ParseFromString(all_students_string)
+
+        student_dict = dict()
+        for student in all_students.students:
+            print('Student Name: {}'.format(student.student_name))
+            print('Student_id: {}\n'.format(student.student_id))
+            student_dict[student.student_name] = student.student_id
+        return student_dict
 
 # <---- Courses related utils from here ---->
 def generate_course_id():
@@ -100,5 +127,32 @@ def get_course_data_by_id(cid: str):
     
     for course in all_courses.courses:
         if course.course_id == cid:
-            # print(course)
+            print(course)
             return course
+
+
+def list_all_courses():
+    if not db.get("all_courses"):
+        print('No course data in redis')
+    else:
+        all_courses = pb.AllCourses()
+        all_courses_string = db.get("all_courses")
+        all_courses.ParseFromString(all_courses_string)
+    [print(MessageToJson(course),'\n\n\n') for course in all_courses.courses]
+
+
+def get_courseList():
+    if not db.get("all_courses"):
+        print('No course data in redis')
+    else:
+        all_courses = pb.AllCourses()
+        all_courses_string = db.get("all_courses")
+        all_courses.ParseFromString(all_courses_string)
+
+        courses_dict = dict()
+        for course in all_courses.courses:
+            print('Course Name: {}'.format(course.course_name))
+            print('Course_id: {}\n'.format(course.course_id))
+            courses_dict[course.course_name] = course.course_id
+        # print(courses_dict)
+        return courses_dict

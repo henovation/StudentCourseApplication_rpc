@@ -33,9 +33,12 @@ class StudentServices(rpc.StudentServicesServicer):
 
     def UpdateStudent(self, request, context):
         """ Update a student info """
-        shelper.update_student(request)
-        success = True
-        return pb.UpdateStudentResponse(success=success)
+        if utils.validate_student_id(request.student_id):
+            shelper.update_student(request)
+            success = True
+            return pb.UpdateStudentResponse(success=success)
+        else:
+            raise ValueError("Not valid student_id: {}".format(request.student_id))
 
     def GetCourse(self, request, context):
         """ Get Courses list of a specified student """
@@ -92,29 +95,23 @@ class CourseServcies(rpc.CourseServicesServicer):
 
     def AddStudent(self, request, context):
         """ Add a student to a course by id """
-        try:
-            if utils.validate_student_id(request.student_id) and utils.validate_course_id(request.course_id):
-                success = chelper.add_student_to_course(request.student_id, request.course_id)
-            else:
-                print('Not a valid student or course id input:\n{}'.format(request))
-                success = False
-        except:
-            print('Exception Error when adding a student to a course  with input data:\n{}'.format(request))
-            success = False
-        return pb.AddStudentToCourseResponse(success=success)
+        # try:
+        if utils.validate_student_id(request.student_id) and utils.validate_course_id(request.course_id):
+            success = chelper.add_student_to_course(request.student_id, request.course_id)
+            return pb.AddStudentToCourseResponse(success=success)
+        else:
+            raise ValueError('Not a valid student or course id input:\n{}'.format(request))
+           
 
     def RemoveStudent(self, request, context):
-        """ Remove a student to a course by id """
-        try:
-            if utils.validate_student_id(request.student_id) and utils.validate_course_id(request.course_id):
-                success = chelper.remove_student_from_course(request.student_id, request.course_id)
-            else:
-                print('Not a valid student or course id input:\n{}'.format(request))
-                success = False
-        except:
-            print('Exception Error when removing a student from a course with input data:\n{}'.format(request))
-            success = False
-        return pb.RemoveStudentFromCourseResponse(success=success)
+        """ Remove a student from a course by id """
+
+        if utils.validate_student_id(request.student_id) and utils.validate_course_id(request.course_id):
+            success = chelper.remove_student_from_course(request.student_id, request.course_id)
+            return pb.RemoveStudentFromCourseResponse(success=success)
+        else:
+            raise ValueError('Not a valid student or course id input:\n{}'.format(request))
+           
 
     def CalculateAve(self, request, context):
         """ Calculate the average of a specified course """

@@ -47,13 +47,13 @@ def calculate_gpa(sid: int):
             registered_courses_ids = student.registered_courses
             break
     
-    print('\nStart calculating student {} GPA:'.format(sid))
+    print('\nCalculating student {} GPA:'.format(sid))
     total_scores = 0
     total_credits = 0
     for cid in registered_courses_ids:
         grade = get_student_grade_from_course(sid, cid)
         credit = get_course_credit(cid)
-        print('Grade: {} for course: {}'.format(grade, cid))
+        # print('Grade: {} for course: {}'.format(grade, cid))
         total_scores += grades_dict.get(grade) * credit
         total_credits += credit
     return total_scores/total_credits

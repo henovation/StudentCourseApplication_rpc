@@ -57,6 +57,7 @@ def add_student_to_course(sid: int, cid: str):
         if course.course_id == cid:
             if sid not in course.enrolled_students:
                 course.enrolled_students.append(sid)
+                print('Added student_id {} to course_id {}'.format(sid, cid))
             else:
                 print('Student_id: {} has been registered! Skipping ...'.format(sid))
                 return False
@@ -84,16 +85,18 @@ def remove_student_from_course(sid: int, cid: str):
     all_students_string = db.get("all_students")
     all_students.ParseFromString(all_students_string)
     
-    target_course = pb.Course()
     for course in all_courses.courses:
         if course.course_id == cid:
             if sid in course.enrolled_students:
+                for i, gmap in enumerate(course.grades):
+                    if sid in gmap.grade:
+                        course.grades.pop(i)
+                        print('Removed student\'s grade {} '.format(gmap.grade[sid]))
                 course.enrolled_students.remove(sid)
-                print('Removed student_id {} from course_id {}'.format(sid, cid))
+                print('Removed student {} from course_id {}'.format(sid, cid))
             else:
                 print('Student_id: {} not found in {}! Skip removing ...'.format(sid, cid))
                 return False
-            target_course = course
             course.last_modified_timestamp.GetCurrentTime()
             all_courses_string = all_courses.SerializeToString()
             db.set("all_courses", all_courses_string)
