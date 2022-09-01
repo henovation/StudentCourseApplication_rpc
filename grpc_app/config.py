@@ -1,0 +1,3 @@
+DEBUG_MODE=True
+DEBUG_HOST="localhost"
+DEBUG_PORT=6379

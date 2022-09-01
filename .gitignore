@@ -5,3 +5,6 @@ setup_test.py
 Pipfile.lock
 __pycache__
 .pytest_cache
+# compile_proto.sh
+# cmd.txt
+*.rdb

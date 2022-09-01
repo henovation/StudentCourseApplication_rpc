@@ -1,6 +1,6 @@
-import grpc_app.helper.generated.scapp_pb2 as pb
-from grpc_app.helper.utils import db
-import grpc_app.helper.utils as utils
+import helper.generated.scapp_pb2 as pb
+from helper.utils import db
+import helper.utils as utils
 
 def store_course(new_course):
     all_courses = pb.AllCourses()

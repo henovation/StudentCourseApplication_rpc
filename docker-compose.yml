@@ -1,29 +1,44 @@
-version: "3.7"
+version: "3.8"
 
 services:
-  # redis:
-  #   restart: always
-  #   image: redis:latest
-  #   container_name: redis
-  #   ports:
-  #     - "0.0.0.0:6379:6379"
-  #   volumes:
-  #     - ./grpc_app/redis_persistence:/data
 
-  # redis_backup:
-  #   restart: always
-  #   image: redis:latest
-  #   container_name: redis_backup
+  # sc_service:
+  #   build:
+  #     context: ./grpc_app
+  #     dockerfile: Dockerfile
+  #   image: sc_service
+  #   container_name: sc_service
   #   ports:
-  #     - "0.0.0.0:6380:6379"
-  #   volumes:
-  #     - ./grpc_app/redis_persistence_backup:/data
+  #     - "0.0.0.0:1024:1024"
+  #   depends_on:
+  #     - redis
+  #   env_file:
+  #     - ./grpc_app/config.py
+  #   restart: always
 
-  sc_service:
-    build:
-      context: ./grpc_app
-      dockerfile: Dockerfile
-    image: sc_service:v1
-    container_name: sc_service
+  redis:
     restart: always
+    image: redis:latest
+    container_name: redis
+    command: redis-server --save 60 1
+    ports:
+      - "0.0.0.0:6379:6379"
+    volumes:
+      - ./grpc_app/redis_persistence:/data
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  redis_backup:
+    restart: always
+    image: redis:latest
+    container_name: redis_backup
+    depends_on:
+      - redis
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis
+      - REDIS_PORT_NUMBER=6379
+    volumes:
+      - ./grpc_app/redis_persistence_backup:/data
+
     

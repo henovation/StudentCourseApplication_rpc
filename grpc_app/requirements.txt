@@ -2,4 +2,4 @@ grpcio
 grpcio_tools
 redis
 grpcio_reflection
-pandas
+# pandas

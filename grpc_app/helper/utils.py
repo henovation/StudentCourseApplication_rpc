@@ -3,10 +3,14 @@ from uuid import uuid4
 from datetime import datetime
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.json_format import MessageToJson
-# import config
-import grpc_app.helper.generated.scapp_pb2 as pb
+import helper.generated.scapp_pb2 as pb
+import config
 
-db = redis.Redis(host='localhost', port=6380)
+if config.DEBUG_MODE is True:
+    print('Debugging mode: ')
+    db = redis.Redis(host=config.DEBUG_HOST, port=config.DEBUG_PORT)
+else:
+    db = redis.Redis(host='redis')
 
 # <---- Datetime processing related utils from here ---->
 def convert_to_datetime_from_string(dt_string: str):
