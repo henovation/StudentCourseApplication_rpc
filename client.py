@@ -1,11 +1,11 @@
 import grpc
 from google.protobuf.json_format import MessageToJson
-import helper.generated.scapp_pb2 as pb
-import helper.generated.scapp_pb2_grpc as rpc
-import helper.SCArgParser as SCArgParser
-import helper.student_service_helper as shelper
-import helper.course_service_helper as chelper
-from helper.utils import *
+import grpc_app.helper.generated.scapp_pb2 as pb
+import grpc_app.helper.generated.scapp_pb2_grpc as rpc
+import grpc_app.helper.SCArgParser as SCArgParser
+import grpc_app.helper.student_service_helper as shelper
+import grpc_app.helper.course_service_helper as chelper
+from grpc_app.helper.utils import *
 
 def create_student(name=None, email=None):
     if not name:

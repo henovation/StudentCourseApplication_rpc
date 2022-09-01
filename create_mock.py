@@ -1,8 +1,8 @@
 import grpc
 import pandas as pd
-import helper.generated.scapp_pb2 as pb
-import helper.generated.scapp_pb2_grpc as rpc
-from helper.utils import db
+import grpc_app.helper.generated.scapp_pb2 as pb
+import grpc_app.helper.generated.scapp_pb2_grpc as rpc
+from grpc_app.helper.utils import db
 
 
 def create_mock_students(df):
@@ -23,8 +23,8 @@ def create_mock_courses(df):
 
 if __name__ == "__main__":
     
-    # students_df = pd.read_csv('tests/mock_data/mock_students_data.csv')
-    # create_mock_students(students_df)
+    students_df = pd.read_csv('tests/mock_data/mock_students_data.csv')
+    create_mock_students(students_df)
 
-    # courses_df = pd.read_csv('tests/mock_data/mock_courses_data.csv')
-    # create_mock_courses(courses_df)
+    courses_df = pd.read_csv('tests/mock_data/mock_courses_data.csv')
+    create_mock_courses(courses_df)

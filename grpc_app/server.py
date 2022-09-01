@@ -156,13 +156,12 @@ class CourseServcies(rpc.CourseServicesServicer):
 
 
 if __name__ == '__main__':
-    import config
 
     server = grpc.server(ThreadPoolExecutor(max_workers=10))
     rpc.add_StudentServicesServicer_to_server(StudentServices(), server)
     rpc.add_CourseServicesServicer_to_server(CourseServcies(), server)
 
-    addr = f'[::]:{config.port}'
+    addr = f'[::]:{1024}'
     server.add_insecure_port(addr)
     server.start()
 

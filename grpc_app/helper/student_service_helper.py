@@ -1,6 +1,6 @@
-from helper.course_service_helper import get_student_grade_from_course, get_course_credit
-import helper.generated.scapp_pb2 as pb
-from helper.utils import db
+from grpc_app.helper.course_service_helper import get_student_grade_from_course, get_course_credit
+import grpc_app.helper.generated.scapp_pb2 as pb
+from grpc_app.helper.utils import db
 
 
 def store_student(student):
