@@ -3,7 +3,7 @@ FROM python:3.8.2-alpine
 
 # Copy the current directory contents into the container at /app
 ADD . .
-EXPOSE 1024
+# EXPOSE 1024
 
 # Install protobuf
 RUN unzip -o /proto/protoc-21.5-linux-x86_64.zip -d ./proto

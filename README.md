@@ -1,5 +1,12 @@
 # Project Description
 A backend service system including the API and data store for a StudentCourseAssignment application.
+
+
+# Quick Start
+## An excel file for generating default data contents. <br>
+1. 
+
+
 ## 1. Architecture and Design
 ## 2. Functional requirements
 ```
@@ -27,10 +34,3 @@ A backend service system including the API and data store for a StudentCourseAss
     * Optimal space/time complexity design
 ```
 
-
-# Quick Start
-## An excel file for generating default data contents. <br>
-1. Install dependency
-```
-    pipenv install -r requirements.txt
-```

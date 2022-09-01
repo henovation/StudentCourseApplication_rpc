@@ -8,8 +8,10 @@ import config
 
 if config.DEBUG_MODE is True:
     print('Debugging mode: ')
+    # db = redis.Redis(host="localhost", port=6379)
     db = redis.Redis(host=config.DEBUG_HOST, port=config.DEBUG_PORT)
 else:
+    print('Hosting from docker')
     db = redis.Redis(host='redis')
 
 # <---- Datetime processing related utils from here ---->

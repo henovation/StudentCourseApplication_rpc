@@ -55,6 +55,7 @@ def update_course(**kwargs):
 
 
 def get_student_course(sid: int):
+    print(db)
     with grpc.insecure_channel('localhost:1024') as channel:
         stub = rpc.StudentServicesStub(channel)
         registered_courses = stub.GetCourse(pb.GetCourseRequest(student_id=sid))
