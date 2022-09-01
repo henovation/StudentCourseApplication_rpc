@@ -10,7 +10,13 @@ db = redis.Redis(host='localhost', port=6379)
 
 # <---- Datetime processing related utils from here ---->
 def convert_to_datetime_from_string(dt_string: str):
-    ymd = dt_string.split('-')
+    if '-' in dt_string:
+        ymd = dt_string.split('-')
+    elif '/' in dt_string:
+        ymd = dt_string.split('/')
+    else:
+        print("Unsupported date format, only yyyy-mm-dd | yyyy/mm/dd supported")
+        return
     dt = datetime(int(ymd[0]), int(ymd[1]), int(ymd[2]))
     return dt
 

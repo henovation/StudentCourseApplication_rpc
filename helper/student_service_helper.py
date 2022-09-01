@@ -15,6 +15,8 @@ def store_student(student):
 
     all_students_string = all_students.SerializeToString()
     db.set("all_students", all_students_string)
+    print("Successfully created student profile:\nID: {}\nName: {}\nEmail: {}"\
+        .format(student.student_id, student.student_name, student.email))
 
 
 def update_student(updated_student):
