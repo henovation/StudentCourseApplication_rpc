@@ -1,11 +1,12 @@
 import grpc
-import tests.SCArgParser as SCArgParser
+import SCArgParser as SCArgParser
 from google.protobuf.json_format import MessageToJson
 import helper.generated.scapp_pb2 as pb
 import helper.generated.scapp_pb2_grpc as rpc
 import helper.student_service_helper as shelper
 import helper.course_service_helper as chelper
 from helper.utils import *
+
 
 def create_student(name=None, email=None):
     if not name:
@@ -18,6 +19,8 @@ def create_student(name=None, email=None):
         if response.success is False:
             raise ValueError("Creating student fails!")
     print("Successfully created student profile:\nName: {}\nEmail: {}".format(name, email))
+    return response
+
 
 def update_student(**kwargs):
     sid = kwargs["sid"]
@@ -34,6 +37,16 @@ def update_student(**kwargs):
             print("Successfully updated student profile to:\nID: {}\nName: {}\nEmail: {}".format(sid, kwargs["name"], kwargs["email"]))
         if response.success is False:
             raise ValueError("Update student fails!")
+    # print(response)
+    return response
+
+def get_student_course(sid: int):
+    print(db)
+    with grpc.insecure_channel('localhost:1024') as channel:
+        stub = rpc.StudentServicesStub(channel)
+        registered_courses = stub.GetCourse(pb.GetCourseRequest(student_id=sid))
+        [print(MessageToJson(course)) for course in registered_courses.courses]
+    return registered_courses
 
 
 def create_course(**kwargs):
@@ -43,7 +56,7 @@ def create_course(**kwargs):
         print("Successfully created course profile!")
         if response.success is False:
             raise ValueError("Create course fails!")
-
+    return response
 
 def update_course(**kwargs):
     with grpc.insecure_channel('localhost:1024') as channel:
@@ -52,14 +65,7 @@ def update_course(**kwargs):
         print("Successfully updated course profile: {}".format(kwargs))
         if response.success is False:
             raise ValueError("Update course fails!")
-
-
-def get_student_course(sid: int):
-    print(db)
-    with grpc.insecure_channel('localhost:1024') as channel:
-        stub = rpc.StudentServicesStub(channel)
-        registered_courses = stub.GetCourse(pb.GetCourseRequest(student_id=sid))
-        [print(MessageToJson(course)) for course in registered_courses.courses]
+    return response
 
 
 def main(args=None):
@@ -89,7 +95,8 @@ def main(args=None):
 
     if args.createStudent:
         if args.name and args.email:
-            create_student(args.name, args.email)
+            response = create_student(args.name, args.email)
+            return response.success
         else:
             print('Please make sure both name and email provided!')
 
@@ -103,7 +110,8 @@ def main(args=None):
             kv["name"] = args.name
         if args.email:
             kv["email"] = args.email
-        update_student(**kv)
+        response = update_student(**kv)
+        return response.success
 
     if args.getCoursesOfStudent:
         get_student_course(args.sid)
@@ -111,6 +119,7 @@ def main(args=None):
     if args.getStudentGradePointAverage:
         response = shelper.calculate_gpa(args.sid)
         print(response)
+        return response
 
     if args.createCourse:
         try:
@@ -123,7 +132,8 @@ def main(args=None):
             kv["start_date"] = args.start_date
             kv["end_date"] = args.end_date
             kv["course_schedule"] = args.end_date
-            create_course(**kv)
+            response = create_course(**kv)
+            return response
         except:
             print("Make sure all required inputs provided!")
 
@@ -148,8 +158,8 @@ def main(args=None):
             kv["end_date"] = args.end_date
         if args.end_date:
             kv["course_schedule"] = args.end_date
-        update_course(**kv)
-
+        response = update_course(**kv)
+        return response
 
     if args.addStudentToCourse:
         if not args.cid:
@@ -158,7 +168,8 @@ def main(args=None):
         elif not args.sid:
             print('No student id specified', '\033[94m')
             return
-        chelper.add_student_to_course(args.sid, args.cid)
+        response = chelper.add_student_to_course(args.sid, args.cid)
+        return response
 
     if args.removeStudentFromCourse:
         if not args.cid:
@@ -167,24 +178,27 @@ def main(args=None):
         elif not args.sid:
             print('No student id specified', '\033[94m')
             return
-        chelper.remove_student_from_course(args.sid, args.cid)
-
+        response = chelper.remove_student_from_course(args.sid, args.cid)
+        return response
 
     if args.calculateCourseAverage:
         response = chelper.calculate_ave(args.cid)
         print('Average score for course {} is: {}'.format(args.cid, response))
+        return response
 
     if args.getStudentsOfCourse:
         response = chelper.get_registered_students(args.cid)
         print(response)
-
+        return response
 
     if args.setStudentGradeForCourse:
         chelper.set_student_grade_to_course(args.sid, args.cid, args.grade)
+        return response
 
     if args.getStudentGrade:
         response = chelper.get_student_grade_from_course(args.sid, args.cid)
         print('Student {} got the grade: "{}" for the course {}'.format(args.sid, response, args.cid))
+        return response
 
     # if args.resetDataStore:
 

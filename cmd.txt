@@ -5,7 +5,8 @@
         * if requirepass -> masterauth pwd
     3. requirepass pwd
 
-    set/get
+    set/get set key value (ex sec)
     mset/mget
     incr/decr/incrby/decrby
     exists
+    expire key sec

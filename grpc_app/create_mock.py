@@ -6,7 +6,7 @@ from helper.utils import db
 
 
 def create_mock_students(df):
-    for i in range(16,20):
+    for i in range(0,20):
         with grpc.insecure_channel('localhost:1024') as channel:
             stub = rpc.StudentServicesStub(channel)
             response = stub.CreateStudent(pb.CreateStudentRequest(student_name=df.loc[i, 'name'], email=df.loc[i, 'email']))
@@ -26,5 +26,5 @@ if __name__ == "__main__":
     students_df = pd.read_csv('tests/mock_data/mock_students_data.csv')
     create_mock_students(students_df)
 
-    # courses_df = pd.read_csv('tests/mock_data/mock_courses_data.csv')
-    # create_mock_courses(courses_df)
+    courses_df = pd.read_csv('tests/mock_data/mock_courses_data.csv')
+    create_mock_courses(courses_df)

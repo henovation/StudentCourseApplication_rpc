@@ -6,13 +6,13 @@ from google.protobuf.json_format import MessageToJson
 import helper.generated.scapp_pb2 as pb
 import config
 
-if config.DEBUG_MODE is True:
-    print('Debugging mode: ')
-    # db = redis.Redis(host="localhost", port=6379)
-    db = redis.Redis(host=config.DEBUG_HOST, port=config.DEBUG_PORT)
-else:
-    print('Hosting from docker')
+if config.DOCKER_MODE is True:
+    print('Hosting on docker: ')
     db = redis.Redis(host='redis')
+else:
+    print('Hosting on local system')
+    db = redis.Redis(host=config.LOCAL_HOST, port=config.LOCAL_PORT)
+
 
 # <---- Datetime processing related utils from here ---->
 def convert_to_datetime_from_string(dt_string: str):
@@ -109,7 +109,7 @@ def list_all_students():
     [print(MessageToJson(student),'\n\n\n') for student in all_students.students]
         
 
-def get_studentList():
+def get_studentList() -> dict:
     if not db.get("all_students"):
         print('No student data in redis')
     else:
@@ -119,8 +119,8 @@ def get_studentList():
 
         student_dict = dict()
         for student in all_students.students:
-            print('Student Name: {}'.format(student.student_name))
-            print('Student_id: {}\n'.format(student.student_id))
+            # print('Student Name: {}'.format(student.student_name))
+            # print('Student_id: {}\n'.format(student.student_id))
             student_dict[student.student_name] = student.student_id
         return student_dict
 
