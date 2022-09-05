@@ -3,20 +3,23 @@ import helper.generated.scapp_pb2 as pb
 from helper.utils import db
 
 
-def store_student(student):
+def store_student(new_student):
     all_students = pb.AllStudents()
     if not db.get("all_students"):
         print('No student data in redis, creating...')
-        all_students.students.append(student)
+        all_students.students.append(new_student)
     else:
         all_students_string = db.get("all_students")
         all_students.ParseFromString(all_students_string)
-        all_students.students.append(student)
+        for student in all_students:
+            if student.name == new_student.name:
+                raise ValueError("Student name has been registered, ignore~")
+        all_students.students.append(new_student)
 
     all_students_string = all_students.SerializeToString()
     db.set("all_students", all_students_string)
     print("Successfully created student profile:\nID: {}\nName: {}\nEmail: {}"\
-        .format(student.student_id, student.student_name, student.email))
+        .format(new_student.student_id, new_student.student_name, new_student.email))
 
 
 def update_student(updated_student):

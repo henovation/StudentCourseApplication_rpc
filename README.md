@@ -10,11 +10,11 @@
 ```
     docker-compose up
     python3 grpc_app/create_mock.py
-    python3 grpc_app/unit_test.py
 ```
 ### Use client.py for any other testing [ Inside sc_service container ]
 ```
     docker exec -it sc_service /bin/sh
+    python3 grpc_app/unit_test.py
     python3 client.py -h
 ```
 #
@@ -25,10 +25,12 @@
     - protobuf compiler
 ### Install redis
 ```
+    <TBD>
 ```
 ### Run up redis server and open port to 6379
 ### Install protobuf compiler 
 ```
+    <TBD>
 ```
 ### Set DOCKER_MODE to False in grpc_app/config.py
 ### Run up grpc_app server
@@ -38,7 +40,7 @@
 ### Create mock data -> Run tests
 ```
     python3 create_mock.py
-    python3 run_test.py
+    python3 unit_test.py
 ```
 ### Use client.py for any other testing
 ```

@@ -163,8 +163,8 @@ def get_courseList():
 
         courses_dict = dict()
         for course in all_courses.courses:
-            print('Course Name: {}'.format(course.course_name))
-            print('Course_id: {}\n'.format(course.course_id))
+            # print('Course Name: {}'.format(course.course_name))
+            # print('Course_id: {}\n'.format(course.course_id))
             courses_dict[course.course_name] = course.course_id
         # print(courses_dict)
         return courses_dict

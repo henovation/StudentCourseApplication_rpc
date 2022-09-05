@@ -10,6 +10,9 @@ def store_course(new_course):
     else:
         all_courses_string = db.get("all_courses")
         all_courses.ParseFromString(all_courses_string)
+        for course in all_courses.courses:
+            if course.course_name == new_course.course_name:
+                raise ValueError("Course name conflict with existing courses, please rename the new course!")
         all_courses.courses.append(new_course)
 
     all_courses_string = all_courses.SerializeToString()
@@ -24,6 +27,8 @@ def update_course(updated_course):
     for course in all_courses.courses:
         if course.course_id == updated_course.course_id:
             if updated_course.course_name:
+                if course.course_name == updated_course.course_name:
+                    raise ValueError("Course has been updated, ignore~")
                 course.course_name = updated_course.course_name
             if updated_course.credits:
                 course.credits = updated_course.credits
@@ -59,7 +64,7 @@ def add_student_to_course(sid: int, cid: str):
                 course.enrolled_students.append(sid)
                 print('Added student_id {} to course_id {}'.format(sid, cid))
             else:
-                print('Student_id: {} has been registered! Skipping ...'.format(sid))
+                print('Student_id: {} has been registered! Skipping registering...'.format(sid))
                 return False
             course.last_modified_timestamp.GetCurrentTime()
             break
