@@ -6,5 +6,5 @@ Pipfile.lock
 __pycache__
 .pytest_cache
 # compile_proto.sh
-# cmd.txt
+cmd.txt
 *.rdb
