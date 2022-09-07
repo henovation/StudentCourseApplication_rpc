@@ -18,15 +18,12 @@
     python3 unit_test.py
     python3 client.py -h
 ```
-### [ Inside redis_backup container ] Setup backup schedule for restoring purpose
+### [ Inside redis_backup container ] Manually backup rdb for restoring purpose
 ```
     docker exec -it redis_backup /bin/bash
-    chmod +x ~/redis_backup.sh
-    crontab -e
-    */5 * * * * ~/redis_backup.sh
+    chmod +x redis_backup.sh
+    bash redis_backup.sh
 ```
-
-#
 # Quick start - Hosting on local system (Optional)
 ### System requirements:
     - python3
