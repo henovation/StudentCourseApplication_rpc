@@ -11,9 +11,6 @@ def store_student(new_student):
     else:
         all_students_string = db.get("all_students")
         all_students.ParseFromString(all_students_string)
-        for student in all_students:
-            if student.name == new_student.name:
-                raise ValueError("Student name has been registered, ignore~")
         all_students.students.append(new_student)
 
     all_students_string = all_students.SerializeToString()

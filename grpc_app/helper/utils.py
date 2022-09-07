@@ -119,8 +119,8 @@ def get_studentList() -> dict:
 
         student_dict = dict()
         for student in all_students.students:
-            # print('Student Name: {}'.format(student.student_name))
-            # print('Student_id: {}\n'.format(student.student_id))
+            print('Student Name: {}'.format(student.student_name))
+            print('Student_id: {}\n'.format(student.student_id))
             student_dict[student.student_name] = student.student_id
         return student_dict
 
@@ -163,8 +163,8 @@ def get_courseList():
 
         courses_dict = dict()
         for course in all_courses.courses:
-            # print('Course Name: {}'.format(course.course_name))
-            # print('Course_id: {}\n'.format(course.course_id))
+            print('Course Name: {}'.format(course.course_name))
+            print('Course_id: {}\n'.format(course.course_id))
             courses_dict[course.course_name] = course.course_id
         # print(courses_dict)
         return courses_dict

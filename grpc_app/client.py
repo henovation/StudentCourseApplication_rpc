@@ -1,4 +1,7 @@
 import grpc
+from glob import glob
+import os
+from datetime import datetime as dt
 import SCArgParser as SCArgParser
 from google.protobuf.json_format import MessageToJson
 import helper.generated.scapp_pb2 as pb
@@ -6,7 +9,6 @@ import helper.generated.scapp_pb2_grpc as rpc
 import helper.student_service_helper as shelper
 import helper.course_service_helper as chelper
 from helper.utils import *
-
 
 def create_student(name=None, email=None):
     if not name:
@@ -200,7 +202,24 @@ def main(args=None):
         print('Student {} got the grade: "{}" for the course {}'.format(args.sid, response, args.cid))
         return response
 
-    # if args.resetDataStore:
+    if args.resetDataStore:
+        if not args.timestamp:
+            print('Please use the latest .rdb file in db_backup for restoring')
+        else:
+            rdb_files = glob(os.path.join(os.getcwd(), 'db_backup/1*.rdb'))
+            input_datetime = dt.fromtimestamp(int(args.timestamp))
+            all_files_datetime = []
+            for file in rdb_files:
+                file_datetime_str = file.split('/')[-1][:-4]
+                all_files_datetime.append(int(file_datetime_str))
+
+            all_files_datetime = sorted(all_files_datetime, reverse=True)
+            for file_dt in all_files_datetime:
+                file_datetime = dt.fromtimestamp(file_dt)
+                if input_datetime >= file_datetime:
+                    break
+            print('Please use {}.rdb file in /db_backup for restoring. Copy and rename the file to dump.db and store it to /db, then restart the redis server!'.format(file_dt))
+
 
 
 if __name__ == "__main__":

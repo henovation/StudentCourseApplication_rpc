@@ -13,22 +13,22 @@ import helper.utils as utils
 class StudentServices(rpc.StudentServicesServicer):
     def CreateStudent(self, request, context):
         """ Create a student info """
-        try:
-            create_time = Timestamp()
-            create_time.GetCurrentTime()
-            new_student = pb.Student(
-                student_id=utils.create_student_id(),
-                student_name=request.student_name,
-                email=request.email,
-                credit_capacity=36,
-                create_student_timestamp=create_time,
-                last_modified_timestamp=create_time,
-            )
-            shelper.store_student(new_student)
-            success = True
-        except:
-            print('Error when creating a student with input data:\n{}'.format(request))
-            success = False
+        # try:
+        create_time = Timestamp()
+        create_time.GetCurrentTime()
+        new_student = pb.Student(
+            student_id=utils.create_student_id(),
+            student_name=request.student_name,
+            email=request.email,
+            credit_capacity=36,
+            create_student_timestamp=create_time,
+            last_modified_timestamp=create_time,
+        )
+        shelper.store_student(new_student)
+        success = True
+        # except:
+        #     print('Error when creating a student with input data:\n{}'.format(request))
+        #     success = False
         return pb.CreateStudentResponse(success=success)
 
     def UpdateStudent(self, request, context):
